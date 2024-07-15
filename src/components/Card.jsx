@@ -3,7 +3,7 @@ import React from "react";
 const Card = ({ title, image, description, link }) => {
   const truncatedDescription = description
     ? description.split(" ").slice(0, 30).join(" ") + "..."
-    : "Blueberry Creamm Muffins are tender, moist treats packed with juicy blueberries and a creamy texture, making them irresistible for breakfast or a delightful snack...";
+    : "Blueberry Creammmm Muffins are tender, moist treats packed with juicy blueberries and a creamy texture, making them irresistible for breakfast or a delightful snack...";
   return (
     <div className="w-1/4 p-4 m-5 bg-white border border-gray-300 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <a href="#">
