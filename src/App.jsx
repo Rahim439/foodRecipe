@@ -32,7 +32,7 @@ function App() {
         <div className="flex flex-wrap items-center justify-center">
           {recipe.map((recipes, index) => (
             <Card
-              key={index} // Assuming show_id is a unique identifier
+              key={index}
               title={recipes.name}
               image={recipes.thumbnail_url}
               description={recipes.description}
