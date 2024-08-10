@@ -1,17 +1,24 @@
 import Card from "./components/Card";
 import { useState, useEffect } from "react";
 import useRecipe from "./hooks/useRecipe";
-import { Audio } from "react-loader-spinner";
+import { TailSpin } from "react-loader-spinner";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const recipe = useRecipe();
-  console.log(recipe);
+
   useEffect(() => {
-    if (recipe && recipe.length > 0) {
+    if (recipe.length > 0) {
       setLoading(false);
     }
   }, [recipe]);
+
+  const displayedRecipes = search
+    ? recipe.filter((rec) =>
+        rec.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : recipe;
 
   return (
     <>
@@ -19,27 +26,34 @@ function App() {
         Food Recipe App
       </h1>
       {loading ? (
-        <Audio
-          height="80"
-          width="80"
-          radius="9"
-          color="green"
-          ariaLabel="loading"
-          wrapperStyle
-          wrapperClass
-        />
-      ) : (
-        <div className="flex flex-wrap items-center justify-center">
-          {recipe.map((recipes, index) => (
-            <Card
-              key={index}
-              title={recipes.name}
-              image={recipes.thumbnail_url}
-              description={recipes.description}
-              link={`https://tasty.co/recipe/${recipes.slug}`}
-            />
-          ))}
+        <div className="flex items-center justify-center h-screen">
+          <TailSpin height="80" width="80" color="purple" ariaLabel="loading" />
         </div>
+      ) : (
+        <>
+          <input
+            type="text"
+            placeholder="Enter Recipe name"
+            onChange={(e) => setSearch(e.target.value)}
+            className="block w-3/4 max-w-lg px-6 py-3 mx-auto my-4 text-lg text-gray-700 placeholder-gray-400 transition duration-300 ease-in-out transform border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent hover:scale-105"
+          />
+
+          <div className="flex flex-wrap items-center justify-center">
+            {displayedRecipes.length > 0 ? (
+              displayedRecipes.map((rec, index) => (
+                <Card
+                  key={index}
+                  title={rec.name}
+                  image={rec.thumbnail_url}
+                  description={rec.description}
+                  link={`https://tasty.co/recipe/${rec.slug}`}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No recipes found</p>
+            )}
+          </div>
+        </>
       )}
     </>
   );
