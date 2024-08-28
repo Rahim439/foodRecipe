@@ -2,10 +2,13 @@ import Card from "./components/Card";
 import { useState, useEffect } from "react";
 import useRecipe from "./hooks/useRecipe";
 import { TailSpin } from "react-loader-spinner";
+import Pagination from "./components/Pagination";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [cardPerPage] = useState(6);
   const recipe = useRecipe();
 
   useEffect(() => {
@@ -14,11 +17,23 @@ function App() {
     }
   }, [recipe]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [currentPage]);
+
   const displayedRecipes = search
     ? recipe.filter((rec) =>
         rec.name.toLowerCase().includes(search.toLowerCase())
       )
     : recipe;
+
+  const lastIndex = currentPage * cardPerPage;
+  const firstIndex = lastIndex - cardPerPage;
+  const currentCards = displayedRecipes.slice(firstIndex, lastIndex);
+  const totalPages = Math.ceil(displayedRecipes.length / cardPerPage);
 
   return (
     <>
@@ -34,13 +49,16 @@ function App() {
           <input
             type="text"
             placeholder="Enter Recipe name"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="block w-3/4 max-w-lg px-6 py-3 mx-auto my-4 text-lg text-gray-700 placeholder-gray-400 transition duration-300 ease-in-out transform border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent hover:scale-105"
           />
 
           <div className="flex flex-wrap items-center justify-center">
-            {displayedRecipes.length > 0 ? (
-              displayedRecipes.map((rec, index) => (
+            {currentCards.length > 0 ? (
+              currentCards.map((rec, index) => (
                 <Card
                   key={index}
                   title={rec.name}
@@ -53,6 +71,11 @@ function App() {
               <p className="text-center text-gray-500">No recipes found</p>
             )}
           </div>
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </>
       )}
     </>
